@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ArkVault.ai – Coming Soon</title>
+  <meta name="description" content="Your private, offline vault for AI conversations, notes, documents and knowledge. Migrate chats, preserve insights, access anywhere—no cloud, no leaks."/>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗝️</text></svg>">
+  <style>
+    :root {
+      --bg: #0f0f1a;
+      --text: #e0e0ff;
+      --accent: #7c3aed;
+      --accent-dark: #5b21b6;
+      --card: #1a1a2e;
+    }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      line-height: 1.6;
+    }
+    h1 {
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      margin: 0.5rem 0;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      background: linear-gradient(90deg, #a78bfa, #7c3aed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .tagline {
+      font-size: 1.5rem;
+      color: #c4b5fd;
+      margin: 1rem 0 2rem;
+      max-width: 700px;
+    }
+    .desc {
+      font-size: 1.2rem;
+      max-width: 720px;
+      opacity: 0.9;
+      margin-bottom: 3rem;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      max-width: 1000px;
+      margin-bottom: 3rem;
+    }
+    .feature-card {
+      background: var(--card);
+      border: 1px solid #333366;
+      border-radius: 12px;
+      padding: 1.8rem;
+      transition: all 0.2s ease;
+    }
+    .feature-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+    .feature-title {
+      font-size: 1.4rem;
+      color: var(--accent);
+      margin-bottom: 0.8rem;
+    }
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      max-width: 600px;
+    }
+    input {
+      padding: 1rem 1.5rem;
+      font-size: 1.1rem;
+      border: 1px solid #444466;
+      background: #1a1a2e;
+      color: white;
+      border-radius: 8px;
+      flex: 1;
+      min-width: 280px;
+    }
+    button {
+      padding: 1rem 2rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: var(--accent-dark);
+    }
+    footer {
+      margin-top: 5rem;
+      font-size: 0.95rem;
+      opacity: 0.7;
+    }
+    @media (max-width: 600px) {
+      h1 { font-size: 3.5rem; }
+      .tagline { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>ArkVault.ai</h1>
+  <p class="tagline">Your Private, Offline Knowledge Vault</p>
+
+  <p class="desc">
+    Migrate AI conversations from any model. Store notes, documents, PDFs and insights securely on your device.  
+    Query your entire knowledge base from any AI—without ever sending data to the cloud. No leaks. No lock-in.  
+    Launching Q2 2026 — Veteran-built in Texas.
+  </p>
+
+  <div class="features">
+    <div class="feature-card">
+      <div class="feature-title">100% Offline & Private</div>
+      Everything runs on your machine. Your data never leaves your device.
+    </div>
+    <div class="feature-card">
+      <div class="feature-title">Chat Migration</div>
+      Export from ChatGPT, Claude, Gemini, Copilot — reload anywhere in open formats.
+    </div>
+    <div class="feature-card">
+      <div class="feature-title">Permanent Knowledge Vault</div>
+      Index PDFs, notes, journals. Search and query your own wisdom forever.
+    </div>
+    <div class="feature-card">
+      <div class="feature-title">Insight Recall</div>
+      Auto-surface patterns, summaries, forgotten details from your history.
+    </div>
+  </div>
+
+  <form action="https://formspree.io/f/your-form-id" method="POST">
+    <input type="email" name="email" placeholder="Your email for early access" required aria-label="Email address"/>
+    <button type="submit">Get Early Access</button>
+  </form>
+
+  <footer>
+    Service-Disabled Veteran-Owned • Privacy First • Built in Texas
+  </footer>
+
+</body>
+</html>

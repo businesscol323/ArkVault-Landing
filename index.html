@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArkVault.ai — Your Memory. Every Platform.</title>
+<meta name="description" content="ArkVault preserves, converts, and carries your AI conversations across every platform. ChatGPT, Claude, Gemini, Copilot — nothing forgotten, everything portable.">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A0A0C;
+    --bg-mid: #0E0E11;
+    --bg-light: #131317;
+    --surface: #16161C;
+    --surface-light: #1C1C24;
+    --gold: #C9A84C;
+    --gold-dim: #A8893D;
+    --gold-bright: #E8C84C;
+    --gold-glow: rgba(201, 168, 76, 0.15);
+    --text: #E8E6E0;
+    --text-dim: #8A8880;
+    --border: rgba(201, 168, 76, 0.08);
+    --border-light: rgba(201, 168, 76, 0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NOISE TEXTURE */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 18px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(24px);
+    background: rgba(10, 10, 12, 0.85);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo-nav {
+    display: flex; align-items: center; gap: 14px; text-decoration: none;
+  }
+  .logo-nav img {
+    height: 36px; width: auto; border-radius: 4px;
+  }
+  .logo-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 18px; font-weight: 700; letter-spacing: 3px; color: var(--gold);
+  }
+  .logo-text span { color: var(--text-dim); font-weight: 400; }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-links a {
+    color: var(--text-dim); text-decoration: none; font-size: 14px;
+    font-weight: 400; letter-spacing: 0.3px; transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-cta {
+    padding: 10px 24px !important; border-radius: 8px !important;
+    background: var(--gold) !important;
+    color: var(--bg) !important; font-weight: 700 !important; font-size: 13px !important;
+    letter-spacing: 0.5px; transition: all 0.3s !important;
+  }
+  .nav-cta:hover { background: var(--gold-bright) !important; transform: translateY(-1px); box-shadow: 0 4px 20px var(--gold-glow); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; padding: 140px 40px 100px; position: relative;
+  }
+  .hero-glow {
+    position: absolute; width: 450px; height: 450px; border-radius: 50%;
+    background: var(--gold); filter: blur(150px); opacity: 0.06; pointer-events: none;
+  }
+  .hero-glow-1 { top: 15%; left: 25%; }
+  .hero-glow-2 { bottom: 20%; right: 20%; }
+
+  .hero-logo {
+    margin-bottom: 48px;
+    animation: fadeInUp 0.8s ease-out;
+  }
+  .hero-logo img {
+    width: 240px; height: auto; border-radius: 12px;
+    filter: drop-shadow(0 0 40px rgba(201, 168, 76, 0.25));
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 18px; border: 1px solid var(--border-light); border-radius: 100px;
+    font-size: 12px; color: var(--text-dim); letter-spacing: 2px;
+    text-transform: uppercase; font-weight: 500; margin-bottom: 32px;
+    background: rgba(201, 168, 76, 0.04);
+    animation: fadeInUp 0.8s ease-out 0.1s both;
+  }
+  .hero-badge .dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--gold);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+
+  h1 {
+    font-size: clamp(44px, 7vw, 84px); font-weight: 800; line-height: 1.05;
+    letter-spacing: -2px; margin-bottom: 24px;
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+  }
+  h1 .gold { color: var(--gold); }
+  .hero-sub {
+    font-size: clamp(17px, 2.2vw, 20px); color: var(--text-dim); max-width: 560px;
+    line-height: 1.65; font-weight: 300; margin-bottom: 44px;
+    animation: fadeInUp 0.8s ease-out 0.35s both;
+  }
+  @keyframes fadeInUp {
+    from { opacity:0; transform:translateY(28px); }
+    to { opacity:1; transform:translateY(0); }
+  }
+
+  .cta-group {
+    display: flex; gap: 14px; align-items: center; flex-wrap: wrap;
+    justify-content: center; animation: fadeInUp 0.8s ease-out 0.5s both;
+  }
+  .btn-gold {
+    padding: 16px 36px; border: none; border-radius: 10px;
+    background: var(--gold); color: var(--bg);
+    font-family: inherit; font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-block;
+    letter-spacing: 0.5px;
+  }
+  .btn-gold:hover { background: var(--gold-bright); transform: translateY(-2px); box-shadow: 0 8px 32px var(--gold-glow); }
+  .btn-ghost {
+    padding: 16px 36px; background: transparent; border: 1px solid var(--border-light);
+    border-radius: 10px; color: var(--text); font-family: inherit; font-size: 15px;
+    font-weight: 500; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-block;
+  }
+  .btn-ghost:hover { border-color: var(--gold-dim); background: rgba(201, 168, 76, 0.04); color: var(--gold); }
+
+  /* PLATFORMS */
+  .platforms {
+    padding: 56px 40px;
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    background: var(--bg-mid);
+  }
+  .platforms-label {
+    text-align: center; font-size: 11px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--text-dim); margin-bottom: 24px; opacity: 0.6;
+  }
+  .platforms-row {
+    display: flex; justify-content: center; align-items: center; gap: 48px; flex-wrap: wrap;
+  }
+  .platform-item {
+    font-family: 'Space Mono', monospace; font-size: 14px; color: var(--text-dim);
+    opacity: 0.35; transition: all 0.3s; letter-spacing: 0.5px;
+  }
+  .platform-item:hover { opacity: 0.9; color: var(--gold); }
+  .pdiv { width: 3px; height: 3px; border-radius: 50%; background: var(--gold); opacity: 0.2; }
+
+  /* SECTIONS */
+  .section { padding: 110px 40px; position: relative; }
+  .section-dark { background: var(--bg-mid); }
+  .section-label {
+    text-align: center; font-size: 11px; letter-spacing: 3px;
+    text-transform: uppercase; margin-bottom: 14px;
+    font-family: 'Space Mono', monospace; color: var(--gold);
+  }
+  .section-title {
+    text-align: center; font-size: clamp(30px, 4.5vw, 48px);
+    font-weight: 700; letter-spacing: -1px; margin-bottom: 56px;
+  }
+
+  /* FEATURES */
+  .features-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px; max-width: 1060px; margin: 0 auto;
+  }
+  .feat {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 32px; transition: all 0.4s;
+    position: relative; overflow: hidden;
+  }
+  .feat::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--gold); opacity: 0; transition: opacity 0.4s;
+  }
+  .feat:hover {
+    border-color: var(--border-light); transform: translateY(-3px);
+    background: var(--surface-light); box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+  .feat:hover::before { opacity: 1; }
+  .feat-icon {
+    width: 44px; height: 44px; border-radius: 10px; margin-bottom: 18px;
+    background: rgba(201, 168, 76, 0.08); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; color: var(--gold);
+  }
+  .feat h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+  .feat p { color: var(--text-dim); font-size: 14px; line-height: 1.6; font-weight: 300; }
+
+  /* HOW IT WORKS */
+  .steps {
+    display: flex; max-width: 960px; margin: 0 auto; gap: 32px;
+    flex-wrap: wrap; justify-content: center;
+  }
+  .step { flex: 1; min-width: 220px; text-align: center; }
+  .step-num {
+    font-family: 'Space Mono', monospace; font-size: 56px; font-weight: 700;
+    line-height: 1; margin-bottom: 14px; color: var(--gold); opacity: 0.15;
+  }
+  .step h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+  .step p { color: var(--text-dim); font-size: 13px; line-height: 1.6; font-weight: 300; }
+
+  /* PRICING */
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 20px; max-width: 920px; margin: 0 auto;
+  }
+  .price-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 36px 28px; text-align: center;
+    transition: all 0.4s; position: relative;
+  }
+  .price-card.pop {
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 40px rgba(201, 168, 76, 0.08);
+  }
+  .price-card.pop::before {
+    content: 'MOST POPULAR'; position: absolute; top: -11px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--gold); color: var(--bg);
+    padding: 4px 16px; border-radius: 100px;
+    font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+  }
+  .price-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+  .price-card .price { font-size: 40px; font-weight: 800; letter-spacing: -1px; margin-bottom: 2px; }
+  .price-card .price span { font-size: 15px; font-weight: 400; color: var(--text-dim); }
+  .price-card .pdesc { font-size: 13px; color: var(--text-dim); margin-bottom: 24px; }
+  .pfeats { list-style: none; text-align: left; margin-bottom: 28px; }
+  .pfeats li {
+    padding: 7px 0; font-size: 13px; color: var(--text-dim);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .pfeats li::before {
+    content: '\2192'; font-family: 'Space Mono', monospace;
+    font-size: 11px; color: var(--gold);
+  }
+  .price-card .btn-gold, .price-card .btn-ghost { width: 100%; text-align: center; }
+
+  /* WAITLIST */
+  .waitlist {
+    text-align: center; background: var(--bg-mid);
+    border-top: 1px solid var(--border);
+  }
+  .wl-box { max-width: 500px; margin: 0 auto; }
+  .waitlist h2 {
+    font-size: clamp(26px, 3.5vw, 38px); font-weight: 700;
+    letter-spacing: -0.5px; margin-bottom: 14px;
+  }
+  .waitlist p { color: var(--text-dim); font-size: 15px; margin-bottom: 28px; font-weight: 300; line-height: 1.6; }
+  .email-form { display: flex; gap: 10px; max-width: 460px; margin: 0 auto; }
+  .email-form input {
+    flex: 1; padding: 15px 18px; background: var(--bg);
+    border: 1px solid var(--border-light); border-radius: 10px;
+    color: var(--text); font-family: inherit; font-size: 14px; outline: none;
+    transition: border-color 0.3s;
+  }
+  .email-form input::placeholder { color: var(--text-dim); opacity: 0.5; }
+  .email-form input:focus { border-color: var(--gold); }
+
+  /* FOOTER */
+  footer {
+    padding: 36px 40px; text-align: center;
+    border-top: 1px solid var(--border);
+  }
+  .footer-brand {
+    font-family: 'Space Mono', monospace; font-size: 13px;
+    letter-spacing: 2px; margin-bottom: 10px; color: var(--gold);
+  }
+  .footer-sub { font-size: 12px; color: var(--text-dim); font-weight: 300; opacity: 0.6; }
+  .footer-links { margin-top: 14px; display: flex; justify-content: center; gap: 24px; }
+  .footer-links a {
+    font-size: 12px; color: var(--text-dim); text-decoration: none;
+    transition: color 0.3s; opacity: 0.6;
+  }
+  .footer-links a:hover { color: var(--gold); opacity: 1; }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    nav { padding: 14px 20px; }
+    .nav-links { display: none; }
+    .hero { padding: 120px 24px 70px; }
+    .hero-logo img { width: 180px; }
+    .section { padding: 80px 24px; }
+    .email-form { flex-direction: column; }
+    .email-form .btn-gold { width: 100%; }
+    .platforms-row { gap: 24px; }
+    .pdiv { display: none; }
+    .cta-group { flex-direction: column; width: 100%; }
+    .cta-group a { width: 100%; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo-nav">
+    <img src="ARKVAULT_LOGO.jpg" alt="ArkVault Logo">
+    <div class="logo-text">ARKVAULT<span>.ai</span></div>
+  </a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how">How It Works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#waitlist" class="nav-cta">Join Waitlist</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow hero-glow-1"></div>
+  <div class="hero-glow hero-glow-2"></div>
+
+  <div class="hero-logo">
+    <img src="ARKVAULT_LOGO.jpg" alt="ArkVault — AI Memory Migration">
+  </div>
+
+  <div class="hero-badge"><span class="dot"></span> Coming Soon</div>
+
+  <h1>Your Memory.<br><span class="gold">Every Platform.</span></h1>
+  <p class="hero-sub">
+    ArkVault preserves, converts, and carries your AI conversations across every platform.
+    ChatGPT, Claude, Gemini, Copilot &mdash; nothing forgotten, everything portable.
+  </p>
+  <div class="cta-group">
+    <a href="#waitlist" class="btn-gold">Join the Waitlist</a>
+    <a href="#how" class="btn-ghost">See How It Works</a>
+  </div>
+</section>
+
+<!-- PLATFORMS -->
+<section class="platforms">
+  <div class="platforms-label">Works With</div>
+  <div class="platforms-row">
+    <span class="platform-item">ChatGPT</span><span class="pdiv"></span>
+    <span class="platform-item">Claude</span><span class="pdiv"></span>
+    <span class="platform-item">Gemini</span><span class="pdiv"></span>
+    <span class="platform-item">Copilot</span><span class="pdiv"></span>
+    <span class="platform-item">Llama</span><span class="pdiv"></span>
+    <span class="platform-item">Mistral</span><span class="pdiv"></span>
+    <span class="platform-item">+ More</span>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="section-label">Core Features</div>
+  <h2 class="section-title">Nothing Gets Left Behind</h2>
+  <div class="features-grid">
+    <div class="feat">
+      <div class="feat-icon">&#x21C4;</div>
+      <h3>Universal Conversion</h3>
+      <p>Import exports from any major AI platform and convert to any other format. One click. Zero data loss.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">&#x2B21;</div>
+      <h3>Open Vault Format</h3>
+      <p>Your data lives in our open .vault format &mdash; human-readable, platform-agnostic, future-proof. No lock-in.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">&#x2295;</div>
+      <h3>Memory Extraction</h3>
+      <p>Distills persistent context, preferences, and knowledge from conversations into a portable memory layer.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">&#x2B25;</div>
+      <h3>Browser-Native</h3>
+      <p>Runs entirely in your browser. No installs. No servers. Your conversations stay yours &mdash; processed locally.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">&#x25B3;</div>
+      <h3>Smart Merge</h3>
+      <p>Combine scattered conversations across platforms into unified threads. ArkVault stitches your memory together.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">&#x25CE;</div>
+      <h3>Vault Snapshots</h3>
+      <p>Version-controlled backups of your entire AI memory. Roll back, branch, or fork at any point.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section section-dark" id="how">
+  <div class="section-label">How It Works</div>
+  <h2 class="section-title">Three Steps. Total Freedom.</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3>Export Your Data</h3>
+      <p>Download your conversation history from ChatGPT, Claude, Gemini, or any supported platform.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>Drop It In The Vault</h3>
+      <p>Drag your export file in. Our engine parses, structures, and converts &mdash; extracting memory and context.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>Take It Anywhere</h3>
+      <p>Export to any platform format, the open .vault standard, or feed your memory into any AI via our API.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section" id="pricing">
+  <div class="section-label">Pricing</div>
+  <h2 class="section-title">Built For Everyone</h2>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <h3>Free</h3>
+      <div class="price">$0</div>
+      <div class="pdesc">Forever free tier</div>
+      <ul class="pfeats">
+        <li>5 conversions per month</li>
+        <li>2 platform formats</li>
+        <li>Basic memory extraction</li>
+        <li>Browser-only processing</li>
+        <li>Community support</li>
+      </ul>
+      <a href="#waitlist" class="btn-ghost">Join Waitlist</a>
+    </div>
+    <div class="price-card pop">
+      <h3>Pro</h3>
+      <div class="price">$8.99<span>/mo</span></div>
+      <div class="pdesc">For power users</div>
+      <ul class="pfeats">
+        <li>Unlimited conversions</li>
+        <li>All platform formats</li>
+        <li>Advanced memory extraction</li>
+        <li>Smart Merge across platforms</li>
+        <li>Vault Snapshots &amp; versioning</li>
+        <li>API access</li>
+      </ul>
+      <a href="#waitlist" class="btn-gold">Join Waitlist</a>
+    </div>
+    <div class="price-card">
+      <h3>Enterprise</h3>
+      <div class="price">Custom</div>
+      <div class="pdesc">For teams &amp; orgs</div>
+      <ul class="pfeats">
+        <li>Everything in Pro</li>
+        <li>Team memory vaults</li>
+        <li>SSO &amp; admin controls</li>
+        <li>On-premise deployment</li>
+        <li>Custom integrations</li>
+        <li>Dedicated support</li>
+      </ul>
+      <a href="#waitlist" class="btn-ghost">Contact Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- WAITLIST -->
+<section class="section waitlist" id="waitlist">
+  <div class="wl-box">
+    <div class="section-label">Early Access</div>
+    <h2>Claim Your Vault</h2>
+    <p>We're building the future of portable AI memory. Join the waitlist and be first when we launch.</p>
+    <div class="email-form">
+      <input type="email" placeholder="your@email.com" id="emailInput">
+      <button class="btn-gold" onclick="handleSignup()">Reserve Spot</button>
+    </div>
+    <p style="font-size: 11px; margin-top: 14px; color: var(--text-dim); opacity: 0.4;">
+      No spam. Veteran-owned. Built in Texas.
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">ARKVAULT.AI</div>
+  <div class="footer-sub">Persistent, portable memory across everything.</div>
+  <div class="footer-links">
+    <a href="#">Twitter/X</a>
+    <a href="#">GitHub</a>
+    <a href="#">Discord</a>
+    <a href="#">Contact</a>
+  </div>
+  <div class="footer-sub" style="margin-top: 20px; opacity: 0.3;">
+    &copy; 2026 ArkVault AI LLC. All rights reserved.
+  </div>
+</footer>
+
+<script>
+function handleSignup() {
+  var email = document.getElementById('emailInput').value;
+  if (email && email.includes('@')) {
+    var btn = document.querySelector('.email-form .btn-gold');
+    btn.textContent = '\u2713 You\'re In';
+    btn.style.background = '#2D7A4F';
+    btn.style.pointerEvents = 'none';
+    document.getElementById('emailInput').disabled = true;
+    document.getElementById('emailInput').style.opacity = '0.4';
+  }
+}
+var obs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) { e.target.style.opacity='1'; e.target.style.transform='translateY(0)'; }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.feat, .step, .price-card').forEach(function(el) {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(16px)';
+  el.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
+  obs.observe(el);
+});
+</script>
+
+</body>
+</html>

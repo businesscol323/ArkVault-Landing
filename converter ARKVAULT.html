@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArkVault — ChatGPT to Claude Converter</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A0A0C;
+    --surface: #131317;
+    --surface2: #1A1A20;
+    --gold: #C9A84C;
+    --gold-dim: #A8893D;
+    --gold-bright: #E8C84C;
+    --gold-glow: rgba(201, 168, 76, 0.15);
+    --text: #E8E6E0;
+    --text-dim: #8A8880;
+    --green: #3ECF8E;
+    --border: rgba(201, 168, 76, 0.1);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg); color: var(--text);
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+    -webkit-font-smoothing: antialiased;
+  }
+  body::after {
+    content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999;
+  }
+
+  .header {
+    width: 100%; padding: 20px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .header-logo {
+    font-family: 'Space Mono', monospace; font-size: 16px;
+    font-weight: 700; letter-spacing: 2px; color: var(--gold);
+  }
+  .header-logo span { color: var(--text-dim); font-weight: 400; }
+  .header-badge {
+    font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--bg); background: var(--gold);
+    padding: 3px 10px; border-radius: 4px; font-weight: 700;
+  }
+  .header-right { font-size: 12px; color: var(--text-dim); }
+
+  .main {
+    width: 100%; max-width: 720px; padding: 60px 24px;
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+  }
+  h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; text-align: center; }
+  h1 .gold { color: var(--gold); }
+  .subtitle { font-size: 15px; color: var(--text-dim); font-weight: 300; text-align: center; margin-bottom: 40px; }
+
+  /* DROP ZONE */
+  .dropzone {
+    width: 100%; border: 2px dashed var(--border); border-radius: 16px;
+    padding: 60px 40px; text-align: center; cursor: pointer;
+    transition: all 0.3s; background: var(--surface); position: relative;
+  }
+  .dropzone:hover, .dropzone.dragover {
+    border-color: var(--gold); background: rgba(201, 168, 76, 0.03);
+    box-shadow: 0 0 40px rgba(201, 168, 76, 0.06);
+  }
+  .dropzone.hidden { display: none; }
+  .dropzone-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.6; }
+  .dropzone-text { font-size: 16px; font-weight: 500; margin-bottom: 6px; }
+  .dropzone-sub { font-size: 13px; color: var(--text-dim); font-weight: 300; }
+  .dropzone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+  /* PANELS */
+  .panel {
+    width: 100%; margin-top: 24px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 12px; padding: 24px;
+    display: none;
+  }
+  .panel.show { display: block; }
+  .panel-title {
+    font-size: 13px; font-weight: 600; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 16px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS */
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+  .stat { background: var(--surface2); border-radius: 8px; padding: 14px; text-align: center; }
+  .stat-num { font-size: 24px; font-weight: 700; color: var(--gold); font-family: 'Space Mono', monospace; }
+  .stat-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+  /* CONVERSATION LIST */
+  .select-actions { display: flex; gap: 10px; margin-bottom: 12px; align-items: center; }
+  .select-btn {
+    font-size: 12px; color: var(--gold); background: none; border: none;
+    cursor: pointer; font-family: inherit; text-decoration: underline;
+  }
+  .select-btn:hover { color: var(--gold-bright); }
+  .conv-list {
+    max-height: 300px; overflow-y: auto; margin-bottom: 16px;
+    border: 1px solid var(--border); border-radius: 8px;
+  }
+  .conv-list::-webkit-scrollbar { width: 6px; }
+  .conv-list::-webkit-scrollbar-track { background: var(--surface); }
+  .conv-list::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 3px; }
+  .conv-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px; border-bottom: 1px solid var(--border);
+    font-size: 13px; transition: background 0.2s;
+  }
+  .conv-item:last-child { border-bottom: none; }
+  .conv-item:hover { background: var(--surface2); }
+  .conv-item input[type="checkbox"] { accent-color: var(--gold); width: 16px; height: 16px; cursor: pointer; }
+  .conv-title { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .conv-meta { font-size: 11px; color: var(--text-dim); white-space: nowrap; }
+
+  /* OPTIONS */
+  .option-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .option-row:last-child { border-bottom: none; }
+  .option-label { font-size: 14px; }
+  .option-label small { display: block; font-size: 12px; color: var(--text-dim); font-weight: 300; margin-top: 2px; }
+  select {
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); padding: 8px 12px; border-radius: 8px;
+    font-family: inherit; font-size: 13px; cursor: pointer; outline: none;
+  }
+  select:focus { border-color: var(--gold); }
+
+  /* BUTTONS */
+  .btn-convert {
+    width: 100%; padding: 16px; border: none; border-radius: 10px;
+    background: var(--gold); color: var(--bg); font-family: inherit;
+    font-size: 15px; font-weight: 700; letter-spacing: 0.5px;
+    cursor: pointer; transition: all 0.3s; margin-top: 16px;
+  }
+  .btn-convert:hover { background: var(--gold-bright); box-shadow: 0 4px 20px var(--gold-glow); }
+  .btn-convert:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* RESULT */
+  .result-card {
+    text-align: center; background: var(--surface);
+    border: 1px solid var(--green); border-radius: 12px; padding: 32px;
+  }
+  .result-icon { font-size: 40px; margin-bottom: 12px; }
+  .result-title { font-size: 18px; font-weight: 600; color: var(--green); margin-bottom: 4px; }
+  .result-sub { font-size: 13px; color: var(--text-dim); margin-bottom: 20px; }
+  .btn-download {
+    padding: 14px 32px; border: none; border-radius: 10px;
+    background: var(--green); color: var(--bg); font-family: inherit;
+    font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.3s; margin: 0 6px;
+  }
+  .btn-download:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-reset {
+    padding: 14px 32px; border: 1px solid var(--border); border-radius: 10px;
+    background: transparent; color: var(--text); font-family: inherit;
+    font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s; margin: 0 6px;
+  }
+  .btn-reset:hover { border-color: var(--gold); color: var(--gold); }
+
+  .footer {
+    width: 100%; padding: 20px; text-align: center;
+    border-top: 1px solid var(--border); font-size: 11px;
+    color: var(--text-dim); opacity: 0.5;
+  }
+
+  @media (max-width: 600px) {
+    .main { padding: 40px 16px; }
+    .stat-grid { grid-template-columns: 1fr; }
+    .header { padding: 16px 20px; flex-direction: column; gap: 8px; }
+    .dropzone { padding: 40px 20px; }
+    .option-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-logo">ARKVAULT<span>.ai</span></div>
+    <div class="header-badge">V1</div>
+  </div>
+  <div class="header-right">All processing happens <strong>locally</strong> in your browser.</div>
+</div>
+
+<div class="main">
+  <h1>ChatGPT <span class="gold">&rarr;</span> Claude</h1>
+  <p class="subtitle">Drop your ChatGPT export and get a Claude-ready memory file in seconds.</p>
+
+  <div class="dropzone" id="dropzone">
+    <div class="dropzone-icon">&#128451;</div>
+    <div class="dropzone-text">Drop conversations.json here</div>
+    <div class="dropzone-sub">or click to browse — from your ChatGPT data export ZIP</div>
+    <input type="file" id="fileInput" accept=".json">
+  </div>
+
+  <!-- LOADED PANEL -->
+  <div class="panel" id="loadedPanel">
+    <div class="panel-title">File Loaded</div>
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-num" id="convCount">0</div><div class="stat-label">Conversations</div></div>
+      <div class="stat"><div class="stat-num" id="msgCount">0</div><div class="stat-label">Messages</div></div>
+      <div class="stat"><div class="stat-num" id="dateRange">-</div><div class="stat-label">Months Span</div></div>
+    </div>
+
+    <div class="select-actions">
+      <button class="select-btn" onclick="selectAll()">Select All</button>
+      <button class="select-btn" onclick="selectNone()">Select None</button>
+      <span style="flex:1"></span>
+      <span style="font-size:12px;color:var(--text-dim)" id="selectedCount">0 selected</span>
+    </div>
+
+    <div class="conv-list" id="convList"></div>
+
+    <div class="option-row">
+      <div class="option-label">Output Format<small>How your memory file is structured</small></div>
+      <select id="formatSelect">
+        <option value="claude-project">Claude Project File</option>
+        <option value="claude-xml">Claude XML Memory</option>
+        <option value="raw-markdown">Raw Markdown</option>
+      </select>
+    </div>
+
+    <button class="btn-convert" id="convertBtn" onclick="convert()">Convert to Claude Memory File</button>
+  </div>
+
+  <!-- RESULT PANEL -->
+  <div class="panel" id="resultPanel">
+    <div class="result-card">
+      <div class="result-icon">&#9989;</div>
+      <div class="result-title">Conversion Complete</div>
+      <div class="result-sub" id="resultSub"></div>
+      <button class="btn-download" onclick="downloadFile()">Download Memory File</button>
+      <button class="btn-reset" onclick="resetAll()">Convert Another</button>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  &copy; 2026 ArkVault AI LLC — Veteran-owned. Built in Texas. Your data never leaves your browser.
+</div>
+
+<script>
+// ============================================================
+// ARKVAULT V1 — ChatGPT to Claude Converter
+// 100% browser-based. No data leaves the client.
+// ============================================================
+
+let conversations = [];
+let parsedConversations = [];
+let outputContent = "";
+
+// --- FILE HANDLING ---
+
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+
+dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+dropzone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropzone.classList.remove('dragover');
+  if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', (e) => { if (e.target.files.length) handleFile(e.target.files[0]); });
+
+function handleFile(file) {
+  if (!file.name.endsWith('.json')) {
+    alert('Please upload a conversations.json file from your ChatGPT export.');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!Array.isArray(data)) throw new Error('Not an array');
+      conversations = data;
+      parseConversations();
+      showLoadedPanel();
+    } catch (err) {
+      alert('Could not parse file. Make sure this is the conversations.json from your ChatGPT export.\n\nError: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+// --- PARSING ---
+
+function getConversationMessages(conversation) {
+  const messages = [];
+  const mapping = conversation.mapping || {};
+  let currentNode = conversation.current_node;
+
+  // Walk backward from current_node through parent chain
+  while (currentNode) {
+    const node = mapping[currentNode];
+    if (!node) break;
+
+    const msg = node.message;
+    if (msg) {
+      const role = msg.author && msg.author.role ? msg.author.role : 'unknown';
+      const content = msg.content || {};
+      let text = '';
+
+      if (content.content_type === 'text' && content.parts) {
+        text = content.parts
+          .filter(p => typeof p === 'string')
+          .join('\n')
+          .trim();
+      }
+
+      if (text && (role === 'user' || role === 'assistant')) {
+        messages.push({
+          role: role,
+          text: text,
+          timestamp: msg.create_time || null
+        });
+      }
+    }
+    currentNode = node.parent;
+  }
+
+  return messages.reverse();
+}
+
+function parseConversations() {
+  parsedConversations = conversations
+    .filter(c => c.mapping && c.current_node)
+    .map(c => {
+      const msgs = getConversationMessages(c);
+      return {
+        title: c.title || 'Untitled',
+        createTime: c.create_time ? new Date(c.create_time * 1000) : null,
+        updateTime: c.update_time ? new Date(c.update_time * 1000) : null,
+        messages: msgs,
+        selected: true
+      };
+    })
+    .filter(c => c.messages.length > 0)
+    .sort((a, b) => (b.updateTime || 0) - (a.updateTime || 0));
+}
+
+// --- UI ---
+
+function showLoadedPanel() {
+  dropzone.classList.add('hidden');
+  document.getElementById('loadedPanel').classList.add('show');
+  document.getElementById('resultPanel').classList.remove('show');
+
+  // Stats
+  const totalMsgs = parsedConversations.reduce((sum, c) => sum + c.messages.length, 0);
+  document.getElementById('convCount').textContent = parsedConversations.length;
+  document.getElementById('msgCount').textContent = totalMsgs.toLocaleString();
+
+  // Date range
+  const dates = parsedConversations.filter(c => c.createTime).map(c => c.createTime);
+  if (dates.length > 1) {
+    const earliest = new Date(Math.min(...dates));
+    const latest = new Date(Math.max(...dates));
+    const months = Math.round((latest - earliest) / (1000 * 60 * 60 * 24 * 30));
+    document.getElementById('dateRange').textContent = months > 0 ? months : '< 1';
+  } else {
+    document.getElementById('dateRange').textContent = '-';
+  }
+
+  // Conversation list
+  const listEl = document.getElementById('convList');
+  listEl.innerHTML = '';
+  parsedConversations.forEach((c, i) => {
+    const div = document.createElement('div');
+    div.className = 'conv-item';
+    const dateStr = c.updateTime ? c.updateTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' }) : '';
+    div.innerHTML = `
+      <input type="checkbox" checked data-index="${i}" onchange="updateSelected()">
+      <span class="conv-title">${escapeHtml(c.title)}</span>
+      <span class="conv-meta">${c.messages.length} msgs</span>
+      <span class="conv-meta">${dateStr}</span>
+    `;
+    listEl.appendChild(div);
+  });
+  updateSelected();
+}
+
+function escapeHtml(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+function updateSelected() {
+  const checkboxes = document.querySelectorAll('#convList input[type="checkbox"]');
+  let count = 0;
+  checkboxes.forEach(cb => {
+    const idx = parseInt(cb.dataset.index);
+    parsedConversations[idx].selected = cb.checked;
+    if (cb.checked) count++;
+  });
+  document.getElementById('selectedCount').textContent = count + ' selected';
+  document.getElementById('convertBtn').disabled = count === 0;
+}
+
+function selectAll() {
+  document.querySelectorAll('#convList input[type="checkbox"]').forEach(cb => cb.checked = true);
+  updateSelected();
+}
+
+function selectNone() {
+  document.querySelectorAll('#convList input[type="checkbox"]').forEach(cb => cb.checked = false);
+  updateSelected();
+}
+
+// --- CONVERSION ---
+
+function convert() {
+  const selected = parsedConversations.filter(c => c.selected);
+  if (selected.length === 0) return;
+
+  const format = document.getElementById('formatSelect').value;
+
+  if (format === 'claude-project') {
+    outputContent = generateClaudeProject(selected);
+  } else if (format === 'claude-xml') {
+    outputContent = generateClaudeXML(selected);
+  } else {
+    outputContent = generateRawMarkdown(selected);
+  }
+
+  // Show result
+  const totalMsgs = selected.reduce((sum, c) => sum + c.messages.length, 0);
+  document.getElementById('resultSub').textContent =
+    `${selected.length} conversations | ${totalMsgs.toLocaleString()} messages | Ready for Claude`;
+  document.getElementById('loadedPanel').classList.remove('show');
+  document.getElementById('resultPanel').classList.add('show');
+}
+
+function generateClaudeProject(convs) {
+  let md = `# ChatGPT Memory Import\n`;
+  md += `> Converted by ArkVault.ai | ${new Date().toLocaleDateString()}\n`;
+  md += `> ${convs.length} conversations | ${convs.reduce((s, c) => s + c.messages.length, 0)} messages\n\n`;
+  md += `---\n\n`;
+  md += `## Instructions for Claude\n\n`;
+  md += `The following is the user's conversation history from ChatGPT. Use this as context to understand their preferences, working style, ongoing projects, and accumulated knowledge. Reference this information naturally when relevant to current conversations.\n\n`;
+  md += `---\n\n`;
+
+  convs.forEach((c, i) => {
+    const dateStr = c.updateTime ? c.updateTime.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'Unknown date';
+    md += `## ${i + 1}. ${c.title}\n`;
+    md += `*Last updated: ${dateStr} | ${c.messages.length} messages*\n\n`;
+
+    c.messages.forEach(m => {
+      const label = m.role === 'user' ? '**User:**' : '**Assistant:**';
+      md += `${label} ${m.text}\n\n`;
+    });
+
+    md += `---\n\n`;
+  });
+
+  return md;
+}
+
+function generateClaudeXML(convs) {
+  let md = `# ChatGPT Memory Import\n`;
+  md += `> Converted by ArkVault.ai | ${new Date().toLocaleDateString()}\n\n`;
+  md += `Use the following conversation history as persistent context about the user.\n\n`;
+
+  md += `<imported_memory source="ChatGPT" converted_by="ArkVault.ai" conversations="${convs.length}">\n\n`;
+
+  convs.forEach((c, i) => {
+    const dateStr = c.updateTime ? c.updateTime.toISOString().split('T')[0] : 'unknown';
+    md += `<conversation title="${escapeXml(c.title)}" date="${dateStr}" messages="${c.messages.length}">\n`;
+
+    c.messages.forEach(m => {
+      md += `<${m.role}>\n${m.text}\n</${m.role}>\n\n`;
+    });
+
+    md += `</conversation>\n\n`;
+  });
+
+  md += `</imported_memory>\n`;
+  return md;
+}
+
+function generateRawMarkdown(convs) {
+  let md = `# ChatGPT Export\n`;
+  md += `*Converted by ArkVault.ai — ${new Date().toLocaleDateString()}*\n\n`;
+
+  convs.forEach((c, i) => {
+    const dateStr = c.updateTime ? c.updateTime.toLocaleDateString() : '';
+    md += `## ${c.title}\n`;
+    if (dateStr) md += `*${dateStr}*\n\n`;
+
+    c.messages.forEach(m => {
+      const label = m.role === 'user' ? '**You:**' : '**ChatGPT:**';
+      md += `${label}\n${m.text}\n\n`;
+    });
+
+    md += `---\n\n`;
+  });
+
+  return md;
+}
+
+function escapeXml(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// --- DOWNLOAD ---
+
+function downloadFile() {
+  const format = document.getElementById('formatSelect').value;
+  let filename = 'arkvault-memory';
+  if (format === 'claude-project') filename = 'arkvault-claude-project';
+  else if (format === 'claude-xml') filename = 'arkvault-claude-memory';
+  else filename = 'arkvault-export';
+  filename += '.md';
+
+  const blob = new Blob([outputContent], { type: 'text/markdown;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// --- RESET ---
+
+function resetAll() {
+  conversations = [];
+  parsedConversations = [];
+  outputContent = '';
+  dropzone.classList.remove('hidden');
+  document.getElementById('loadedPanel').classList.remove('show');
+  document.getElementById('resultPanel').classList.remove('show');
+  fileInput.value = '';
+}
+</script>
+
+</body>
+</html>

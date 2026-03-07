@@ -511,11 +511,24 @@ function handleSignup() {
   var email = document.getElementById('emailInput').value;
   if (email && email.includes('@')) {
     var btn = document.querySelector('.email-form .btn-gold');
-    btn.textContent = '\u2713 You\'re In';
-    btn.style.background = '#2D7A4F';
+    btn.textContent = 'Submitting...';
     btn.style.pointerEvents = 'none';
-    document.getElementById('emailInput').disabled = true;
-    document.getElementById('emailInput').style.opacity = '0.4';
+
+    var formData = new FormData();
+    formData.append('EMAIL', email);
+    formData.append('u', 'b43500334424d5e57d1ba7319');
+    formData.append('id', '9332d323f4');
+
+    fetch('https://gmail.us10.list-manage.com/subscribe/post?u=b43500334424d5e57d1ba7319&id=9332d323f4&f_id=001b5be1f0', {
+      method: 'POST',
+      mode: 'no-cors',
+      body: formData
+    }).then(function() {
+      btn.textContent = '\u2713 You\'re In';
+      btn.style.background = '#2D7A4F';
+      document.getElementById('emailInput').disabled = true;
+      document.getElementById('emailInput').style.opacity = '0.4';
+    });
   }
 }
 var obs = new IntersectionObserver(function(entries) {

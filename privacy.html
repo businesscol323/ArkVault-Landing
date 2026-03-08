@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — ArkVault</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Syne:wght@400;500;600;700&family=Space+Mono:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #D4A017;
+    --gold-bright: #FFD050;
+    --gold-dim: #6B5000;
+    --gold-glow: rgba(212,160,23,0.15);
+    --black: #080808;
+    --panel: #0F0F0F;
+    --border: #1a1a1a;
+    --text: #E8E0CC;
+    --dim: #555;
+    --dim2: #888;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: rgba(8,8,8,0.95);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-decoration: none;
+  }
+
+  .back-link {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--dim2);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .back-link:hover { color: var(--gold); }
+
+  /* HERO */
+  .hero {
+    padding: 80px 40px 60px;
+    max-width: 800px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-tag::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: var(--gold);
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+
+  .hero-subtitle {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--dim2);
+  }
+
+  /* CONTENT */
+  .content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 60px 40px;
+  }
+
+  /* SUMMARY BOX */
+  .summary-box {
+    background: var(--gold-glow);
+    border: 1px solid var(--gold-dim);
+    padding: 28px 32px;
+    margin-bottom: 60px;
+  }
+
+  .summary-box .summary-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .summary-box ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .summary-box ul li {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--text);
+    letter-spacing: 0.5px;
+    padding-left: 20px;
+    position: relative;
+  }
+
+  .summary-box ul li::before {
+    content: '⬡';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-size: 9px;
+    top: 1px;
+  }
+
+  /* SECTIONS */
+  .section {
+    margin-bottom: 52px;
+    padding-bottom: 52px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section:last-child {
+    border-bottom: none;
+  }
+
+  .section-number {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  h2 {
+    font-family: 'Orbitron', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--gold);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  p {
+    font-size: 15px;
+    color: var(--text);
+    margin-bottom: 16px;
+    line-height: 1.8;
+  }
+
+  p:last-child { margin-bottom: 0; }
+
+  strong {
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  /* HIGHLIGHT BLOCKS */
+  .highlight {
+    background: var(--panel);
+    border-left: 3px solid var(--gold);
+    padding: 16px 20px;
+    margin: 20px 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--dim2);
+    letter-spacing: 0.5px;
+    line-height: 1.7;
+  }
+
+  /* CONTACT BOX */
+  .contact-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 32px;
+    text-align: center;
+    margin-top: 60px;
+  }
+
+  .contact-box .contact-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 12px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  .contact-box p {
+    font-size: 13px;
+    color: var(--dim2);
+    margin-bottom: 16px;
+  }
+
+  .contact-box a {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--gold);
+    text-decoration: none;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--gold-dim);
+    padding-bottom: 2px;
+    transition: border-color 0.2s;
+  }
+
+  .contact-box a:hover { border-color: var(--gold); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-left {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--dim);
+    text-transform: uppercase;
+  }
+
+  .footer-right {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: var(--dim);
+  }
+
+  .footer-right a {
+    color: var(--gold-dim);
+    text-decoration: none;
+  }
+
+  .footer-right a:hover { color: var(--gold); }
+
+  /* SCAN LINE EFFECT */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  @media (max-width: 600px) {
+    header { padding: 16px 20px; }
+    .hero { padding: 50px 20px 40px; }
+    .content { padding: 40px 20px; }
+    footer { padding: 20px; flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="https://arkvault.ai" class="logo">ARKVAULT</a>
+  <a href="https://arkvault.ai" class="back-link">← Back to Home</a>
+</header>
+
+<div class="hero">
+  <div class="hero-tag">Legal</div>
+  <h1>Privacy Policy</h1>
+  <div class="hero-subtitle">Last updated: March 8, 2026 &nbsp;·&nbsp; Effective immediately</div>
+</div>
+
+<div class="content">
+
+  <!-- SUMMARY -->
+  <div class="summary-box">
+    <div class="summary-title">The Short Version</div>
+    <ul>
+      <li>We do not collect your conversations. Ever.</li>
+      <li>Everything stays on your device — local storage only.</li>
+      <li>We do not sell, share, or transmit your data to anyone.</li>
+      <li>No account required. No cloud sync. No tracking.</li>
+      <li>You own your memory. Full stop.</li>
+    </ul>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="section">
+    <div class="section-number">01 — Overview</div>
+    <h2>Who We Are</h2>
+    <p>ArkVault ("we," "us," or "our") is a browser-based AI memory migration tool available at <strong>arkvault.ai</strong> and as a Chrome browser extension. ArkVault is operated under Elah Holdings LLC, a veteran-owned business based in Texas.</p>
+    <p>This Privacy Policy explains what information we collect (very little), how we use it, and your rights regarding your data. We built ArkVault on a foundation of privacy-first principles — your AI memory belongs to you, and we intend to keep it that way.</p>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section">
+    <div class="section-number">02 — Data Collection</div>
+    <h2>What We Collect</h2>
+    <p><strong>The ArkVault Chrome Extension</strong> does not collect, transmit, or store any of your conversation data on our servers. When you vault a conversation, that data is saved exclusively to your browser's local storage — it never leaves your device.</p>
+    <div class="highlight">
+      Your vaulted conversations are stored locally on your device using Chrome's built-in storage API. ArkVault has no server-side database of user conversations. We cannot access your vaults even if we wanted to.
+    </div>
+    <p><strong>The ArkVault website (arkvault.ai)</strong> may collect standard anonymous analytics data such as page views and general geographic region through third-party services. This data is aggregated and never tied to individual identities.</p>
+    <p><strong>The waitlist form</strong> on arkvault.ai collects your email address if you voluntarily submit it. This is stored via Mailchimp and used only to notify you of product updates and launch announcements. You can unsubscribe at any time.</p>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section">
+    <div class="section-number">03 — Chrome Extension</div>
+    <h2>Extension Permissions</h2>
+    <p>The ArkVault Chrome Extension requests the following permissions and here is exactly why each is needed:</p>
+    <div class="highlight">
+      <strong style="color: var(--gold);">activeTab</strong> — Allows the extension to read the content of the current tab when you click the Vault button. We only read the page when you explicitly trigger it. We never read tabs passively or in the background.<br><br>
+      <strong style="color: var(--gold);">storage</strong> — Allows the extension to save your vaulted conversations to your local browser storage. Nothing is sent to any external server.<br><br>
+      <strong style="color: var(--gold);">scripting</strong> — Allows the extension to run a content script that detects and extracts conversation text from supported AI platforms when you click Vault.
+    </div>
+    <p>We access only the AI platform pages you explicitly use the extension on: ChatGPT, Claude, Gemini, and Microsoft Copilot. We do not access any other websites or browser activity.</p>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section">
+    <div class="section-number">04 — Data Sharing</div>
+    <h2>Who We Share Data With</h2>
+    <p>We do not sell your personal data. We do not share your conversation data with any third party. Period.</p>
+    <p>The only third-party service we use is <strong>Mailchimp</strong> for email list management, which stores the email addresses of users who voluntarily join our waitlist. Mailchimp's own privacy policy governs how they handle that data.</p>
+    <p>We may disclose information if required by law or to protect the rights and safety of ArkVault and its users — however, since we do not collect conversation data, there is nothing to disclose in most circumstances.</p>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="section">
+    <div class="section-number">05 — Your Rights</div>
+    <h2>Your Data, Your Control</h2>
+    <p>Because your vaulted conversations are stored locally on your device, you have complete control over them at all times:</p>
+    <p><strong>Delete your vaults</strong> — Use the "Clear Vault" button inside the extension at any time to permanently delete all locally stored conversations.</p>
+    <p><strong>Export your vaults</strong> — Use the "Export All" button to download your entire vault as a JSON file anytime.</p>
+    <p><strong>Remove the extension</strong> — Uninstalling the ArkVault extension from Chrome will remove all locally stored data associated with it.</p>
+    <p><strong>Unsubscribe from emails</strong> — Every email from ArkVault includes an unsubscribe link. You can also email us directly to be removed from our list.</p>
+  </div>
+
+  <!-- SECTION 6 -->
+  <div class="section">
+    <div class="section-number">06 — Security</div>
+    <h2>How We Protect Your Data</h2>
+    <p>Since your conversation data never leaves your device, the primary security of your vaults depends on the security of your own computer and Chrome browser profile. We recommend keeping your browser and operating system up to date.</p>
+    <p>For email addresses collected via our waitlist, we rely on Mailchimp's industry-standard security practices for storage and protection.</p>
+  </div>
+
+  <!-- SECTION 7 -->
+  <div class="section">
+    <div class="section-number">07 — Children</div>
+    <h2>Children's Privacy</h2>
+    <p>ArkVault is not directed at children under the age of 13. We do not knowingly collect personal information from children under 13. If you believe a child has provided us with personal information, please contact us and we will promptly delete it.</p>
+  </div>
+
+  <!-- SECTION 8 -->
+  <div class="section">
+    <div class="section-number">08 — Changes</div>
+    <h2>Updates to This Policy</h2>
+    <p>We may update this Privacy Policy as ArkVault grows and adds new features. When we do, we will update the "Last updated" date at the top of this page. For significant changes, we will notify waitlist members via email.</p>
+    <p>Your continued use of ArkVault after any changes constitutes acceptance of the updated policy.</p>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="contact-box">
+    <div class="contact-title">Questions?</div>
+    <p>If you have any questions about this Privacy Policy or how ArkVault handles your data, reach out directly.</p>
+    <a href="mailto:hello@arkvault.ai">hello@arkvault.ai</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-left">© 2026 ArkVault · Elah Holdings LLC · Texas</div>
+  <div class="footer-right"><a href="https://arkvault.ai">arkvault.ai</a> · Privacy-First · Local Storage · Yours Forever</div>
+</footer>
+
+</body>
+</html>

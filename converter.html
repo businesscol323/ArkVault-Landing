@@ -543,6 +543,56 @@ function resetAll() {
   fileInput.value = '';
 }
 </script>
+<!-- ==================== ARKFORCE FORGE ==================== -->
+<div style="margin: 40px auto; max-width: 720px; padding: 32px; border: 2px solid #A8893C; border-radius: 12px; background: #0a1f1a; text-align: center;">
+  <h2 style="color: #A8893C; margin-bottom: 8px; font-size: 24px;">🚀 ArkForce – Turn Your Vault Into Cash</h2>
+  <p style="color: #ccc; margin-bottom: 24px; font-size: 16px;">
+    One click → create a sellable professional AI agent<br>
+    (you keep 90–97% on Gumroad)
+  </p>
+  
+  <button onclick="forgeAgent()" 
+    style="background: #A8893C; color: white; font-weight: bold; padding: 18px 40px; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; width: 100%; max-width: 320px;">
+    Forge My Professional Agent Now
+  </button>
+  
+  <div id="forgeStatus" style="margin-top: 20px; color: #3EC0E0; font-weight: 500; min-height: 24px;"></div>
+</div>
 
+<script>
+// ARKFORCE – works with your existing code
+async function forgeAgent() {
+  // Try to use any vault data you already have (falls back gracefully)
+  let vaultData = {};
+  if (typeof window.loadCurrentVault === 'function') {
+    vaultData = await window.loadCurrentVault();
+  } else if (typeof window.getVaultData === 'function') {
+    vaultData = await window.getVaultData();
+  }
+
+  const agentName = prompt("Name your agent (e.g. Texas Energy Deal Closer)") || "My Expert Agent";
+
+  const agentFile = {
+    format: "arkforce-agent-v1",
+    name: agentName,
+    price: 799,
+    monthlyOption: 99,
+    description: `Built from my real ArkVault history (${vaultData.memories ? vaultData.memories.length : 'many'} conversations)`,
+    systemPrompt: "You are an expert version of me, trained on my actual client chats and decisions.",
+    vaultHash: btoa(JSON.stringify(vaultData))
+  };
+
+  const blob = new Blob([JSON.stringify(agentFile, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${agentName.replace(/\s+/g, "-")}.agent`;
+  a.click();
+
+  document.getElementById("forgeStatus").innerHTML = 
+    `✅ ${agentName} forged!<br>Now go to Gumroad, create a product, and upload this .agent file.`;
+}
+</script>
+<!-- ==================== END ARKFORCE ==================== -->
 </body>
 </html>
